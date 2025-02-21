@@ -8,16 +8,17 @@ pipeline {
     }
 
     stages {
-        stage('Checkout Code') {
+        stage('Checkout') {
+            steps {
+                git url: 'https://github.com/Talla89/Parabank.git', credentialsId: '6fa9589f-d1ef-41ce-937a-4e1ea74b28af'
+            }
+        }
+        stage('Build') {
             steps {
                 script {
-                    checkout([$class: 'GitSCM',
-                              branches: [[name: "*/${env.GIT_BRANCH}"]],
-                              userRemoteConfigs: [[
-                                  url: env.GIT_REPO,
-                                  credentialsId: env.GIT_CREDENTIALS_ID
-                              ]]
-                    ])
+                    // Assurez-vous que le chemin est correct
+                    def jenkinsfile = readFile('cypress/e2e/Jenkinsfile')
+                    echo "Jenkinsfile trouvé : ${jenkinsfile}"
                 }
             }
         }
