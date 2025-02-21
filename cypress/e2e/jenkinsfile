@@ -4,25 +4,26 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/Talla89/Parabank.git'
+                checkout([$class: 'GitSCM', 
+          branches: [[name: '*/main']], 
+          userRemoteConfigs: [[
+            url: 'https://github.com/Talla89/Parabank.git',
+            credentialsId: '6fa9589f-d1ef-41ce-937a-4e1ea74b28af'
+          ]]
+])
+
             }
         }
 
-        stage('Build') {
+        stage('Install Dependencies') {
             steps {
-                echo 'Building the project...'
+                sh 'npm install'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Running tests...'
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                echo 'Deploying the project...'
+                sh 'npm test'
             }
         }
     }
