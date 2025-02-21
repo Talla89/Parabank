@@ -15,6 +15,17 @@ pipeline {
             }
         }
 
+        stage('Build') {
+            steps {
+                git 'https://github.com/Talla89/Parabank.git'
+                script {
+                    def jenkinsfile = readFile('cypress/e2e/jenkinsfile')
+                    // Continuez avec votre logique de construction
+                }
+            }
+        }
+
+
         stage('Install Dependencies') {
             steps {
                 sh 'npm install'
