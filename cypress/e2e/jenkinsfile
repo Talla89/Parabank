@@ -1,52 +1,23 @@
 pipeline {
     agent any
 
-    environment {
-        GIT_CREDENTIALS_ID = '6fa9589f-d1ef-41ce-937a-4e1ea74b28af'
-        GIT_REPO = 'https://github.com/Talla89/Parabank.git'
-        GIT_BRANCH = 'main'
-    }
-
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/Talla89/Parabank.git', credentialsId: '6fa9589f-d1ef-41ce-937a-4e1ea74b28af'
-            }
-        }
-        stage('Build') {
-            steps {
-                script {
-                    // Assurez-vous que le chemin est correct
-                    def jenkinsfile = readFile('cypress/e2e/Jenkinsfile')
-                    echo "Jenkinsfile trouvé : ${jenkinsfile}"
-                }
+                git branch: 'main', url: 'https://github.com/Talla89/Parabank.git'
             }
         }
 
-        stage('Build') {
+        stage('Install Dependencies') {
             steps {
-                echo 'Building the project...'
-                sh './mvnw clean install'
+                sh 'npm install'
             }
         }
 
-        stage('Test') {
+        stage('Run Cypress Tests') {
             steps {
-                echo 'Running tests...'
-                sh './mvnw test'
+                sh 'npx cypress run'
             }
-        }
-
-        stage('Deploy') {
-            steps {
-                echo 'Deploying the application...'
-            }
-        }
-    }
-
-    post {
-        always {
-            echo 'Pipeline terminé !'
         }
     }
 }
