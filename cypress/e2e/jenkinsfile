@@ -1,41 +1,51 @@
 pipeline {
     agent any
 
-    stages {
-        stage('Checkout') {
-            steps {
-                checkout([$class: 'GitSCM', 
-          branches: [[name: '*/main']], 
-          userRemoteConfigs: [[
-            url: 'https://github.com/Talla89/Parabank.git',
-            credentialsId: '6fa9589f-d1ef-41ce-937a-4e1ea74b28af'
-          ]]
-])
+    environment {
+        GIT_CREDENTIALS_ID = '6fa9589f-d1ef-41ce-937a-4e1ea74b28af'
+        GIT_REPO = 'https://github.com/Talla89/Parabank.git'
+        GIT_BRANCH = 'main'
+    }
 
+    stages {
+        stage('Checkout Code') {
+            steps {
+                script {
+                    checkout([$class: 'GitSCM',
+                              branches: [[name: "*/${env.GIT_BRANCH}"]],
+                              userRemoteConfigs: [[
+                                  url: env.GIT_REPO,
+                                  credentialsId: env.GIT_CREDENTIALS_ID
+                              ]]
+                    ])
+                }
             }
         }
 
         stage('Build') {
             steps {
-                git 'https://github.com/Talla89/Parabank.git'
-                script {
-                    def jenkinsfile = readFile('cypress/e2e/jenkinsfile')
-                    // Continuez avec votre logique de construction
-                }
-            }
-        }
-
-
-        stage('Install Dependencies') {
-            steps {
-                sh 'npm install'
+                echo 'Building the project...'
+                sh './mvnw clean install'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'npm test'
+                echo 'Running tests...'
+                sh './mvnw test'
             }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Deploying the application...'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline terminé !'
         }
     }
 }
