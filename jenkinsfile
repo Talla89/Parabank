@@ -11,7 +11,8 @@ pipeline {
         stage('Cache Cypress') {
            steps {
                powershell 'mkdir -p ~/.cache/Cypress'
-               powershell 'export CYPRESS_CACHE_FOLDER=~/.cache/Cypress'
+               powershell '$env:CYPRESS_CACHE_FOLDER="C:\\Users\\mbaye\\.cache\\Cypress"'
+
             }
         }
 
